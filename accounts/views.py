@@ -63,7 +63,7 @@ class SingUpViewset(viewsets.ViewSet):
 
     def patch(self,request,*args,**kwargs):
         data = request.data
-        user = Profile.objects.get(email = data['email']).first()
+        user = Profile.objects.get(email = data['email'])
         if user:
             user.profile_photo = data['profile_photo']
             user.bio = data['bio']
