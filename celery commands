@@ -1,0 +1,15 @@
+pip install eventlet
+pip install celery==5.3.4
+pip install django-celery-beat==2.5.0
+pip install django-celery-results==2.5.1
+
+
+INSTALLED_APPS = [
+    'django_celery_results',
+    'django_celery_beat',
+]
+
+
+to run celery worker =  celery -A (your_app_name) worker -l info -P eventlet
+
+to run celery beat =   celery -A (your_app_name) beat -l INFO

@@ -22,7 +22,7 @@ class Profile_Page(BaseModel):
     profile_photo = models.ImageField(upload_to='Profile-images', null=True, blank=True)
 
     def __str__(self):
-        return f'{str(self.name)} =======  {str(self.uuid)}'
+        return f'{str(self.name)} "     " {str(self.uuid)}'
 
 
 class Posts(BaseModel):
@@ -41,7 +41,7 @@ class VideoPost(BaseModel):
     file = models.FileField(upload_to='POST_VIDEOS')
 
     def __str__(self):
-        return self.user_id
+        return str(self.Profile_id)
 
 class hightlites(BaseModel):
     user_id = models.ForeignKey(Profile, on_delete=models.CASCADE)
@@ -66,6 +66,9 @@ class Followers(models.Model):
 class Following(models.Model):
     user_id = models.ForeignKey(Profile,on_delete=models.CASCADE)
     following_id = models.ForeignKey(Profile_Page,on_delete=models.CASCADE,related_name='following',related_query_name='following')
+
+    def __str__(self):
+        return f'{str(self.user_id)} is follwing {str(self.following_id)} '
 
 class Comments(models.Model):
     user_id = models.ForeignKey(Profile,on_delete=models.CASCADE)
