@@ -11,6 +11,7 @@ core.register('LikeView',LikeView,basename='LikeView')
 core.register('StoriesView',StoriesView,basename='StoriesView')
 core.register('CommentsViewset',CommentsViewset,basename='CommentsViewset')
 core.register('FollowingViewSet',FollowingViewSet,basename='FollowingViewSet')
+# core.register('CommentsCountView',CommentsCountView,basename='CommentsCountView')
 
 urlpatterns = [
     path('',include(core.urls)),

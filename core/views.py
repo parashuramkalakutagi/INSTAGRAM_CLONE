@@ -13,6 +13,10 @@ class PostView(viewsets.ViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def list(self,request,*args,**kwargs):
+        queryset = Posts.objects.filter(Q(user_id=request.user) and Q(Profile_id__user= request.user)).values('uuid','post','created_at')
+        return Response(queryset)
+
     def create(self,request,*args,**kwargs):
         try:
             data = request.data
@@ -37,6 +41,9 @@ class VideoPostView(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
+    def list(self,request,*args,**kwargs):
+        queryset = VideoPost.objects.filter(Q(user_id=request.user) and Q(Profile_id__user=request.user)).values('uuid','file','created_at')
+        return Response(queryset)
     def create(self,request,*args,**kwargs):
         try:
             data = request.data
@@ -64,6 +71,11 @@ class HighlightsView(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
+    def list(self,request,*args,**kwargs):
+        queryset = hightlites.objects.filter(Q(user_id=request.user) and Q(Profile_id__user_id=request.user)).values_list('stories',flat=True)
+        return Response(queryset)
+
+
     def create(self,request,*args,**kwargs):
         try:
             data = request.data
@@ -88,6 +100,10 @@ class HighlightsView(viewsets.ViewSet):
 class LikeView(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+
+    def list(self,request,*args,**kwargs):
+        queryset = Likes.objects.filter(Q(user_id=request.user) and Q(profile_id__user=request.user)).aggregate(total_likes = Count('post_id__likes__profile_id'))
+        return Response(queryset)
 
     def create(self, request, *args, **kwargs):
 
@@ -135,9 +151,21 @@ class StoriesView(viewsets.ViewSet):
             return Response({'error':e},status=HTTP_400_BAD_REQUEST)
 
 
+# class CommentsCountView(viewsets.ViewSet):
+#     authentication_classes = [JWTAuthentication]
+#     permission_classes = [IsAuthenticated]
+#     def list(self, request, *args, **kwargs):
+#      queryset = Comments.objects.all().values('post_id__comments__user_id__email').annotate(total_comments = Count('post_id__comments__user_id__email'))
+#      return Response(queryset)
+
 class CommentsViewset(viewsets.ViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def list(self,request,*args,**kwargs):
+        queryset = Comments.objects.all()
+        serializer = CommentsSerializer(queryset,many=True).data
+        return Response(serializer)
 
     def create(self, request, *args, **kwargs):
         try:
