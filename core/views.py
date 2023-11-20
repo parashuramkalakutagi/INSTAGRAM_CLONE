@@ -103,8 +103,9 @@ class LikeView(viewsets.ViewSet):
     authentication_classes = [JWTAuthentication]
 
     def list(self,request,*args,**kwargs):
-        queryset = Likes.objects.filter(Q(user_id=request.user) and Q(profile_id__user=request.user)).aggregate(total_likes = Count('post_id__likes__profile_id'))
-        return Response(queryset)
+        queryset = Likes.objects.filter(Q(user_id=request.user) and Q(profile_id__user=request.user))
+        serializers = LikeSerializer(queryset,many=True).data
+        return Response(serializers)
 
     def create(self, request, *args, **kwargs):
 

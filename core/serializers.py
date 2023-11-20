@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Comments,Profile,Profile_Page,Posts,VideoPost
+from .models import Comments,Profile,Profile_Page,Posts,VideoPost,Likes
 from django.db.models import Q,F,Count,aggregates,Aggregate
 from rest_framework import request
 
@@ -51,5 +51,18 @@ class CommentsSerializer(serializers.ModelSerializer):
         if obj:
             queryset = Comments.objects.filter(post_id=obj.post_id).aggregate(comments_count = Count('message'))
             return queryset
+        else:
+            return None
+
+class LikeSerializer(serializers.ModelSerializer):
+    total_likes = serializers.SerializerMethodField('get_likes')
+    class Meta:
+        model = Likes
+        fields = ['post_id','total_likes']
+
+    def get_likes(self,obj):
+        if obj:
+            qr = Likes.objects.filter(post_id=obj.post_id).aggregate(total_likes = Count('profile_id'))
+            return qr
         else:
             return None
