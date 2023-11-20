@@ -14,8 +14,9 @@ class PostView(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     def list(self,request,*args,**kwargs):
-        queryset = Posts.objects.filter(Q(user_id=request.user) and Q(Profile_id__user= request.user)).values('uuid','post','created_at')
-        return Response(queryset)
+        queryset = Posts.objects.filter(Q(user_id=request.user) and Q(Profile_id__user= request.user))
+        serializers = PostSerializer(queryset,many=True).data
+        return Response(serializers,status=HTTP_200_OK)
 
     def create(self,request,*args,**kwargs):
         try:

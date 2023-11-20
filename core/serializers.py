@@ -10,9 +10,17 @@ class ProfilePageSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     # Profile_id = ProfilePageSerializer(many=False)
+    total_posts = serializers.SerializerMethodField('get_all_post_count')
     class Meta:
         model = Posts
-        fields = ['uuid','Profile_id','post']
+        fields = ['uuid','Profile_id','post','total_posts']
+
+    def get_all_post_count(self,obj):
+        if obj:
+            queryset = Posts.objects.all().count()
+            return queryset
+        else:
+            return None
 
 
 class ProfileSerializer(serializers.ModelSerializer):
