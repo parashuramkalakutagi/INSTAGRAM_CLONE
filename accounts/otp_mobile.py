@@ -11,3 +11,5 @@ def send_otp_phone(phone_number):
         return otp
     except Exception as e:
         return None
+
+

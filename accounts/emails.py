@@ -15,7 +15,8 @@ def send_via_mail(email):
     user_obj.save()
     return otp
 
-class Util:
-    def send_email(data):
-        email = EmailMessage(subject=data['subject'],body=data['email_body'],to=[data['to_email']],from_email=settings.EMAIL_HOST)
-        email.send()
+def send_story_deleted_mail(email,username):
+    subject = f'mr.{username} Your story is expired '
+    message = 'now it will be deleted \n now you can post anthor story'
+    email_from = settings.EMAIL_HOST
+    send_mail(subject=subject,message=message,from_email=email_from,recipient_list=[email])

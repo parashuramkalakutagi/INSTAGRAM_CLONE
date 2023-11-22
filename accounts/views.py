@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken,BlacklistedToken
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .emails import send_via_mail,Util
+from .emails import send_via_mail
 from .backend import RegisterAuthBackend
 import jwt
 import time
