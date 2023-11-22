@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+
+  app:
+    build: .
+    volumes:
+      - .:/django_rest
+    ports:
+      - 8000:8000
+    image: app:django_rest
+    container_name: rest_docker
+    command: gunicorn instagram.wsgi --bind 0.0.0.0:8000
+    depends_on:
+      - redis
+
+
+  celery:
+    build: .
+    command:  celery -A instagram worker -l info -P eventlet
+
+    volumes:
+      - .:/django_rest
+    depends_on:
+      - redis
+
+  celery-beat:
+      build: .
+      command: celery -A instagram beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+      volumes:
+        - .:/django_rest
+      depends_on:
+        - redis
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - .:/django_rest
+      - ./src:/src  # for syncing with django source code
+      - ./config/nginx:/etc/nginx/conf.d
+    image: nginx
+    container_name: nginx_container
+    ports:
+      - 8001:8001
+    depends_on:
+      - app
